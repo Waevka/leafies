@@ -7,29 +7,31 @@
 using namespace std;
 /////////////////////////////////////
 enum dir { LEFT = -1, RIGHT = 1, UP = -N, DOWN = N };
-void fill(int tab[]);
-void draw(int tab[]);
-void randomujTo(int ile, int tab[], string *s);
+struct Listek {
+	int* tab = new int[N*N];
+};
+void fill(Listek l);
+void draw(Listek l);
+void randomujTo(int ile, Listek l, string *s);
 bool check(int pos, dir d);
 void swapKappa(int tab[], int pos, dir d);
 void reverseDir(dir d, dir *lastd);
 void writeLetter(string *s, dir d);
 
 int zeroPos;
+
 /////////////////////////////////////
-
-
 int main()
-{   
+{
 	srand(time(NULL));
-	int* matrix = new int[N*N];
+	Listek first;
 	string solution = "";
 
-	fill(matrix);
-	draw(matrix);
-	randomujTo(4, matrix, &solution);
+	fill(first);
+	draw(first);
+	randomujTo(4, first, &solution);
 	cout << endl;
-	draw(matrix);
+	draw(first);
 	cout << solution;
 
 	cin.get();
@@ -37,30 +39,30 @@ int main()
 }
 
 //Fills the table with numbahs
-void fill(int tab[]) {
+void fill(Listek l) {
 	int count = 1;
 	for (int i = 0; i < N*N; i++) {
-			if (count != N*N) {
-				tab[i] = count;
-				count++;
-			}
-			else {
-				tab[i] = 0;
-				zeroPos = N*N-1;
-			}
+		if (count != N*N) {
+			l.tab[i] = count;
+			count++;
+		}
+		else {
+			l.tab[i] = 0;
+			zeroPos = N*N - 1;
+		}
 	}
 }
 
 //Draws the table
-void draw(int tab[]) {
+void draw(Listek l) {
 	for (int i = 0; i < N*N; i++) {
-			cout << setw(5) << tab[i] << " ";
-			if (i%N == N-1) { cout << endl; }
+		cout << setw(5) << l.tab[i] << " ";
+		if (i%N == N - 1) { cout << endl; }
 	}
 }
 
 //Randomly swaps tiles. Remembers last move to check and not repeat it in reverse.
-void randomujTo(int ile, int tab[], string *s) {
+void randomujTo(int ile, Listek l, string *s) {
 	int count = 0;
 	int randomek;
 	dir d = DOWN;
@@ -75,7 +77,7 @@ void randomujTo(int ile, int tab[], string *s) {
 		else { d = UP; }
 
 		if (check(zeroPos, d) && d != lastd) {
-			swapKappa(tab, zeroPos, d);
+			swapKappa(l.tab, zeroPos, d);
 			writeLetter(s, d);
 			reverseDir(d, &lastd);
 			zeroPos += d;
@@ -115,7 +117,7 @@ bool check(int pos, dir d) {
 
 //Swaps two tiles
 void swapKappa(int tab[], int pos, dir d) {
-	int a = tab[pos+d];
+	int a = tab[pos + d];
 	tab[pos + d] = tab[pos];
 	tab[pos] = a;
 }
@@ -159,3 +161,5 @@ void writeLetter(string *s, dir d) {
 		break;
 	}
 }
+
+void dawajBFS() {}
