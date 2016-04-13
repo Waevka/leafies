@@ -17,6 +17,7 @@ bool check(int pos, dir d);
 void swapKappa(int tab[], int pos, dir d);
 void reverseDir(dir d, dir *lastd);
 void writeLetter(string *s, dir d);
+bool checkIfFinished(int tab[]);
 
 int zeroPos;
 
@@ -29,10 +30,12 @@ int main()
 
 	fill(first);
 	draw(first);
+	cout << endl << "Valid tabliczka: " << checkIfFinished(first->tab);
 	randomujTo(4, first, &solution);
 	cout << endl;
 	draw(first);
-	cout << solution;
+	cout << endl << "Valid tabliczka: " << checkIfFinished(first->tab);
+	cout << endl << solution;
 
 	cin.get();
 	return 0;
@@ -163,3 +166,22 @@ void writeLetter(string *s, dir d) {
 }
 
 void dawajBFS() {}
+
+bool checkIfFinished(int tab[]) {
+	int count = 1;
+	bool valid = true;
+	for (int i = 0; i < N*N; i++) {
+		if (count != N*N) {
+			if (tab[i] != count) {
+				valid = false;
+			}
+			count++;
+		}
+		else {
+			if (tab[i] != 0) {
+				valid = false;
+			}
+		}
+	}
+	return valid;
+}
