@@ -11,6 +11,7 @@ enum dir { LEFT = -1, RIGHT = 1, UP = -N, DOWN = N };
 struct Listek {
 	int* tab = new int[N*N];
 	int zeroPos;
+	int depth;
 };
 void fill(Listek *l);
 void draw(Listek *l);
@@ -19,6 +20,7 @@ bool check(int pos, dir d);
 void swapKappa(int tab[], int pos, dir d);
 void reverseDir(dir d, dir *lastd);
 void writeLetter(string *s, dir d);
+bool dawajBFS(Listek *begin, int depth);
 bool checkIfFinished(int tab[]);
 
 /////////////////////////////////////
@@ -30,11 +32,13 @@ int main()
 
 	fill(first);
 	draw(first);
-	cout << endl << "Valid tabliczka: " << checkIfFinished(first->tab);
-	randomujTo(4, first, &solution);
+	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
+	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 0);
+	randomujTo(1, first, &solution);
 	cout << endl;
 	draw(first);
-	cout << endl << "Valid tabliczka: " << checkIfFinished(first->tab);
+	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
+	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 0);
 	cout << endl << solution;
 
 	cin.get();
@@ -54,6 +58,7 @@ void fill(Listek *l) {
 			l->zeroPos = N*N - 1;
 		}
 	}
+	l->depth = 0;
 }
 
 //Draws the table
@@ -165,7 +170,25 @@ void writeLetter(string *s, dir d) {
 	}
 }
 
-void dawajBFS() {}
+bool dawajBFS(Listek *begin, int depth) {
+	std::queue <Listek> bingo;
+	bingo.push(*begin);
+	bool finished = false;
+	bool solvable = false;
+
+	while (!bingo.empty() && finished != true) {
+		if (checkIfFinished(bingo.front().tab)) {
+			finished = true;
+			solvable = true;
+			cout << "\nqueue finished";
+		}
+		if (bingo.front().depth == depth) {
+			finished = true;
+		}
+	}
+
+	return solvable;
+}
 
 bool checkIfFinished(int tab[]) {
 	int count = 1;
