@@ -27,31 +27,33 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);
 Listek *makeANode(Listek last, dir d);
-Listek *copyLeaf(Listek c);
+void copyLeaf(Listek *a, Listek b);
 void drawNodeInfo(Listek l);
 
 /////////////////////////////////////
 int main()
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	Listek *first = new Listek();
 	Listek *winner = new Listek();
-
 	initialize(first);
+	initialize(winner);
+
+
 	cout << "\n\n CASE 1: ------------------------------------\n";
 	draw(first);
 	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
 	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 1, winner);
 	cout << "\n\n The winner leaf: \n";
-	draw(winner);
+	drawNodeInfo(*winner);
 	cout << "\n\n CASE 2: ------------------------------------\n";
-	randomujTo(1, first);
+	randomujTo(2, first);
 	cout << endl;
 	draw(first);
 	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
-	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 2, winner);
+	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 3, winner);
 	cout << "\n\n The winner leaf: \n";
-	draw(winner);
+	drawNodeInfo(*winner);
 	cin.get();
 	return 0;
 }
@@ -223,7 +225,7 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner) {
 		if (checkIfFinished(bingo->front().tab)) {
 			finished = true;
 			solvable = true;
-			winner = copyLeaf(bingo->front());
+			copyLeaf(winner, bingo->front());
 			cout << "\nqueue finished with success";
 		}	else if (bingo->front().depth + 1 > depth) {
 			finished = true;
@@ -262,31 +264,23 @@ void generateMoves(std::queue <Listek> *q) {
 
 	if (check(last.zeroPos, UP) && lastdir != UP) {
 		Listek *pushMe;
-		cout << "\nUP possible";
 		pushMe = makeANode(last, UP);
 		q->push(*pushMe);
-		drawNodeInfo(*pushMe);
 	}
 	if (check(last.zeroPos, DOWN) && lastdir != DOWN) {
 		Listek *pushMe;
-		cout << "\nDOWN possible";
 		pushMe = makeANode(last, DOWN);
 		q->push(*pushMe);
-		drawNodeInfo(*pushMe);
 	}
 	if (check(last.zeroPos, LEFT) && lastdir != LEFT) {
 		Listek *pushMe;
-		cout << "\nLEFT possible";
 		pushMe = makeANode(last, LEFT);
 		q->push(*pushMe);
-		drawNodeInfo(*pushMe);
 	}
 	if (check(last.zeroPos, RIGHT) && lastdir != RIGHT){
 		Listek *pushMe;
-		cout << "\nRIGHT possible";
 		pushMe = makeANode(last, RIGHT);
 		q->push(*pushMe);
-		drawNodeInfo(*pushMe);
 	}
 }
 
@@ -302,13 +296,11 @@ Listek *makeANode(Listek last, dir d) {
 	return l;
 }
 
-Listek *copyLeaf(Listek c) {
-	Listek *l = new Listek();
-	tabCopy(l->tab, c.tab);
-	l->depth = c.depth;
-	l->solution = c.solution;
-	l->zeroPos = c.zeroPos;
-	return l;
+void copyLeaf(Listek *a, Listek b) {
+	tabCopy(a->tab, b.tab);
+	a->depth = b.depth;
+	a->solution = b.solution;
+	a->zeroPos = b.zeroPos;
 }
 
 void drawNodeInfo(Listek l) {
