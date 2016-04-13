@@ -7,46 +7,50 @@
 
 using namespace std;
 /////////////////////////////////////
-enum dir { LEFT = -1, RIGHT = 1, UP = -N, DOWN = N };
+enum dir { LEFT = -1, NONE = 0, RIGHT = 1, UP = -N, DOWN = N };
 struct Listek {
 	int* tab = new int[N*N];
 	int zeroPos;
 	int depth;
+	string solution;
 };
-void fill(Listek *l);
+void initialize(Listek *l);
 void draw(Listek *l);
-void randomujTo(int ile, Listek *l, string *s);
+void randomujTo(int ile, Listek *l);
 bool check(int pos, dir d);
 void swapKappa(int tab[], int pos, dir d);
 void reverseDir(dir d, dir *lastd);
+dir returnLastDir(string s);
 void writeLetter(string *s, dir d);
 bool dawajBFS(Listek *begin, int depth);
 bool checkIfFinished(int tab[]);
+void generateMoves(std::queue <Listek> *q);
 
 /////////////////////////////////////
 int main()
 {
 	srand(time(NULL));
 	Listek *first = new Listek();
-	string solution = "";
 
-	fill(first);
+	initialize(first);
 	draw(first);
 	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
-	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 0);
-	randomujTo(1, first, &solution);
+	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 1);
+	randomujTo(1, first);
 	cout << endl;
 	draw(first);
 	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
-	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 0);
-	cout << endl << solution;
+	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 1);
 
 	cin.get();
 	return 0;
 }
 
 //Fills the table with numbahs
-void fill(Listek *l) {
+void initialize(Listek *l) {
+	l->depth = 0;
+	l->solution = "";
+
 	int count = 1;
 	for (int i = 0; i < N*N; i++) {
 		if (count != N*N) {
@@ -58,7 +62,6 @@ void fill(Listek *l) {
 			l->zeroPos = N*N - 1;
 		}
 	}
-	l->depth = 0;
 }
 
 //Draws the table
@@ -70,11 +73,11 @@ void draw(Listek *l) {
 }
 
 //Randomly swaps tiles. Remembers last move to check and not repeat it in reverse.
-void randomujTo(int ile, Listek *l, string *s) {
+void randomujTo(int ile, Listek *l) {
 	int count = 0;
 	int randomek;
 	dir d = DOWN;
-	dir lastd = UP;
+	dir lastd = RIGHT;
 
 	while (count != ile) {
 		randomek = rand() % 4;
@@ -85,8 +88,8 @@ void randomujTo(int ile, Listek *l, string *s) {
 		else { d = UP; }
 
 		if (check(l->zeroPos, d) && d != lastd) {
+			writeLetter(&(l->solution), d);
 			swapKappa(l->tab, l->zeroPos, d);
-			writeLetter(s, d);
 			reverseDir(d, &lastd);
 			l->zeroPos += d;
 			count++;
@@ -151,19 +154,40 @@ void reverseDir(dir d, dir *lastd) {
 	}
 }
 
+dir returnLastDir(string s) {
+	dir returnik = NONE;
+	if (s.length() == 0) {
+		return NONE;
+	}
+	string c = s.substr(s.length() - 1);
+	if (c.compare("U") == 0) {
+		returnik = UP;
+	}
+	if (c.compare("D") == 0) {
+		returnik = DOWN;
+	}
+	if (c.compare("L") == 0) {
+		returnik = LEFT;
+	}
+	if (c.compare("R") == 0) {
+		returnik = RIGHT;
+	}
+	return returnik;
+}
+
 void writeLetter(string *s, dir d) {
 	switch (d) {
 	case UP:
-		*s += "D";
-		break;
-	case DOWN:
 		*s += "U";
 		break;
+	case DOWN:
+		*s += "D";
+		break;
 	case LEFT:
-		*s += "R";
+		*s += "L";
 		break;
 	case RIGHT:
-		*s += "L";
+		*s += "R";
 		break;
 	default:
 		break;
@@ -171,20 +195,24 @@ void writeLetter(string *s, dir d) {
 }
 
 bool dawajBFS(Listek *begin, int depth) {
-	std::queue <Listek> bingo;
-	bingo.push(*begin);
+	std::queue <Listek> *bingo = new queue <Listek>();
+	bingo->push(*begin);
 	bool finished = false;
 	bool solvable = false;
 
-	while (!bingo.empty() && finished != true) {
-		if (checkIfFinished(bingo.front().tab)) {
+	while (!bingo->empty() && finished != true) {
+		if (checkIfFinished(bingo->front().tab)) {
 			finished = true;
 			solvable = true;
-			cout << "\nqueue finished";
+			cout << "\nqueue finished with success";
 		}
-		if (bingo.front().depth == depth) {
+		if (bingo->front().depth == depth) {
 			finished = true;
+		} else {
+			// time to add sum leaves
+			generateMoves(bingo);
 		}
+		bingo->pop();
 	}
 
 	return solvable;
@@ -207,4 +235,21 @@ bool checkIfFinished(int tab[]) {
 		}
 	}
 	return valid;
+}
+
+void generateMoves(std::queue <Listek> *q) {
+	Listek last = q->front();
+	dir lastdir = returnLastDir(last.solution);
+	if (check(last.zeroPos, UP) && lastdir != UP) {
+
+	}
+	if (check(last.zeroPos, DOWN) && lastdir != DOWN) {
+
+	}
+	if (check(last.zeroPos, LEFT) && lastdir != LEFT) {
+
+	}
+	if (check(last.zeroPos, RIGHT) && lastdir != RIGHT){
+
+	}
 }
