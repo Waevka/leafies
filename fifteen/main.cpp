@@ -23,7 +23,7 @@ void swapKappa(int tab[], int pos, dir d);
 dir reverseDir(dir d);
 dir returnLastDir(string s);
 void writeLetter(string *s, dir d);
-bool dawajBFS(Listek *begin, int depth, Listek *winner);
+bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);
 Listek *makeANode(Listek last, dir d);
@@ -38,22 +38,22 @@ int main()
 	Listek *winner = new Listek();
 	initialize(first);
 	initialize(winner);
+	int randomSteps = 17;
+	int maxDepth = 20;
+	bool melon = false;
+	int totalMoves = 0;
 
-
-	cout << "\n\n CASE 1: ------------------------------------\n";
+	cout << "#### Losowo wygenerowana plansza (Liczba krokow: " << randomSteps << "): ####\n";
+	randomujTo(randomSteps, first);
 	draw(first);
-	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
-	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 1, winner);
-	cout << "\n\n The winner leaf: \n";
-	drawNodeInfo(*winner);
-	cout << "\n\n CASE 2: ------------------------------------\n";
-	randomujTo(2, first);
-	cout << endl;
-	draw(first);
-	cout << endl << "\nValid tabliczka: " << checkIfFinished(first->tab);
-	cout << "\nzagadka jest rozwiazywalna? : " << dawajBFS(first, 3, winner);
-	cout << "\n\n The winner leaf: \n";
-	drawNodeInfo(*winner);
+	cout << "\n#### Rozpoczynam rozwiazywanie planszy (Maksymalny poziom listka: " << maxDepth << ") ####";
+	melon = dawajBFS(first, maxDepth, winner, totalMoves);
+	cout << "\n\nCzy zagadka jest rozwiazywalna? : " << (melon? "tak!" : "nie :(" );
+	if (melon) {
+		cout << "\n\n Zwycieski listek: \n";
+		drawNodeInfo(*winner);
+	}
+	cout << "\n\nOdwiedzone listki: " << totalMoves;
 	cin.get();
 	return 0;
 }
@@ -214,10 +214,9 @@ void writeLetter(string *s, dir d) {
 	}
 }
 
-bool dawajBFS(Listek *begin, int depth, Listek *winner) {
+bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 	std::queue <Listek> *bingo = new queue <Listek>();
 	bingo->push(*begin);
-	drawNodeInfo(*begin);
 	bool finished = false;
 	bool solvable = false;
 
@@ -226,13 +225,14 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner) {
 			finished = true;
 			solvable = true;
 			copyLeaf(winner, bingo->front());
-			cout << "\nqueue finished with success";
+			delete bingo;
 		}	else if (bingo->front().depth + 1 > depth) {
 			finished = true;
 		}	else {
 			// time to add sum leaves
 			generateMoves(bingo);
 			bingo->pop();
+			totalMoves++;
 		}
 	}
 	return solvable;
@@ -305,8 +305,8 @@ void copyLeaf(Listek *a, Listek b) {
 
 void drawNodeInfo(Listek l) {
 	cout << "\n===========";
-	cout << "\n|Depth:" << l.depth << " |";
-	cout << "\n|Zeropos:" << l.zeroPos << " |";
+	cout << "\n|Depth: " << l.depth << " |";
+	cout << "\n|Zeropos: " << l.zeroPos << " |";
 	cout << "\n|Solution: " << l.solution << " |" << endl;
 	draw(&l);
 	cout << "\n===========";
