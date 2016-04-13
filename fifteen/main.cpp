@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <time.h>
 #include <string>
+#include <queue>
 #define N 4
 
 using namespace std;
@@ -9,6 +10,7 @@ using namespace std;
 enum dir { LEFT = -1, RIGHT = 1, UP = -N, DOWN = N };
 struct Listek {
 	int* tab = new int[N*N];
+	int zeroPos;
 };
 void fill(Listek *l);
 void draw(Listek *l);
@@ -18,8 +20,6 @@ void swapKappa(int tab[], int pos, dir d);
 void reverseDir(dir d, dir *lastd);
 void writeLetter(string *s, dir d);
 bool checkIfFinished(int tab[]);
-
-int zeroPos;
 
 /////////////////////////////////////
 int main()
@@ -51,7 +51,7 @@ void fill(Listek *l) {
 		}
 		else {
 			l->tab[i] = 0;
-			zeroPos = N*N - 1;
+			l->zeroPos = N*N - 1;
 		}
 	}
 }
@@ -79,11 +79,11 @@ void randomujTo(int ile, Listek *l, string *s) {
 		else if (randomek == 2) { d = DOWN; }
 		else { d = UP; }
 
-		if (check(zeroPos, d) && d != lastd) {
-			swapKappa(l->tab, zeroPos, d);
+		if (check(l->zeroPos, d) && d != lastd) {
+			swapKappa(l->tab, l->zeroPos, d);
 			writeLetter(s, d);
 			reverseDir(d, &lastd);
-			zeroPos += d;
+			l->zeroPos += d;
 			count++;
 		}
 	}
