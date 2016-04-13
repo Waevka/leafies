@@ -10,9 +10,9 @@ enum dir { LEFT = -1, RIGHT = 1, UP = -N, DOWN = N };
 struct Listek {
 	int* tab = new int[N*N];
 };
-void fill(Listek l);
-void draw(Listek l);
-void randomujTo(int ile, Listek l, string *s);
+void fill(Listek *l);
+void draw(Listek *l);
+void randomujTo(int ile, Listek *l, string *s);
 bool check(int pos, dir d);
 void swapKappa(int tab[], int pos, dir d);
 void reverseDir(dir d, dir *lastd);
@@ -24,7 +24,7 @@ int zeroPos;
 int main()
 {
 	srand(time(NULL));
-	Listek first;
+	Listek *first = new Listek();
 	string solution = "";
 
 	fill(first);
@@ -39,30 +39,30 @@ int main()
 }
 
 //Fills the table with numbahs
-void fill(Listek l) {
+void fill(Listek *l) {
 	int count = 1;
 	for (int i = 0; i < N*N; i++) {
 		if (count != N*N) {
-			l.tab[i] = count;
+			l->tab[i] = count;
 			count++;
 		}
 		else {
-			l.tab[i] = 0;
+			l->tab[i] = 0;
 			zeroPos = N*N - 1;
 		}
 	}
 }
 
 //Draws the table
-void draw(Listek l) {
+void draw(Listek *l) {
 	for (int i = 0; i < N*N; i++) {
-		cout << setw(5) << l.tab[i] << " ";
+		cout << setw(5) << l->tab[i] << " ";
 		if (i%N == N - 1) { cout << endl; }
 	}
 }
 
 //Randomly swaps tiles. Remembers last move to check and not repeat it in reverse.
-void randomujTo(int ile, Listek l, string *s) {
+void randomujTo(int ile, Listek *l, string *s) {
 	int count = 0;
 	int randomek;
 	dir d = DOWN;
@@ -77,7 +77,7 @@ void randomujTo(int ile, Listek l, string *s) {
 		else { d = UP; }
 
 		if (check(zeroPos, d) && d != lastd) {
-			swapKappa(l.tab, zeroPos, d);
+			swapKappa(l->tab, zeroPos, d);
 			writeLetter(s, d);
 			reverseDir(d, &lastd);
 			zeroPos += d;
