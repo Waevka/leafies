@@ -26,9 +26,10 @@ void writeLetter(string *s, dir d);
 bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);
-Listek *makeANode(Listek last, dir d);
+void makeANode(Listek last, dir d, std::queue <Listek> *q);
 void copyLeaf(Listek *a, Listek b);
 void drawNodeInfo(Listek l);
+void clearMe(std::queue <Listek> *q);
 
 /////////////////////////////////////
 int main()
@@ -225,11 +226,13 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 			finished = true;
 			solvable = true;
 			copyLeaf(winner, bingo.front());
+			clearMe(&bingo);
 		}	else if (bingo.front().depth + 1 > depth) {
 			finished = true;
 		}	else {
 			// time to add sum leaves
 			generateMoves(&bingo);
+			delete[] bingo.front().tab;
 			bingo.pop();
 			totalMoves++;
 		}
@@ -262,41 +265,30 @@ void generateMoves(std::queue <Listek> *q) {
 	lastdir = reverseDir(lastdir);
 
 	if (check(last.zeroPos, UP) && lastdir != UP) {
-		Listek *pushMe;
-		pushMe = makeANode(last, UP);
-		q->push(*pushMe);
-		delete pushMe;
+		makeANode(last, UP, q);
 	}
 	if (check(last.zeroPos, DOWN) && lastdir != DOWN) {
-		Listek *pushMe;
-		pushMe = makeANode(last, DOWN);
-		q->push(*pushMe);
-		delete pushMe;
+		makeANode(last, DOWN, q);
 	}
 	if (check(last.zeroPos, LEFT) && lastdir != LEFT) {
-		Listek *pushMe;
-		pushMe = makeANode(last, LEFT);
-		q->push(*pushMe);
-		delete pushMe;
+		makeANode(last, LEFT, q);
 	}
 	if (check(last.zeroPos, RIGHT) && lastdir != RIGHT){
-		Listek *pushMe;
-		pushMe = makeANode(last, RIGHT);
-		q->push(*pushMe);
-		delete pushMe;
+		makeANode(last, RIGHT, q);
 	}
 }
 
-Listek *makeANode(Listek last, dir d) {
-	Listek *l = new Listek();
-	tabCopy(l->tab, last.tab);
-	l->depth = last.depth + 1;
-	l->solution = last.solution;
-	l->zeroPos = last.zeroPos;
-	writeLetter(&(l->solution), d);
-	swapKappa(l->tab, l->zeroPos, d);
-	l->zeroPos += d;
-	return l;
+void makeANode(Listek last, dir d, std::queue <Listek> *q) {
+	Listek l;
+	initialize(&l);
+	tabCopy(l.tab, last.tab);
+	l.depth = last.depth + 1;
+	l.solution = last.solution;
+	l.zeroPos = last.zeroPos;
+	writeLetter(&(l.solution), d);
+	swapKappa(l.tab, l.zeroPos, d);
+	l.zeroPos += d;
+	q->push(l);
 }
 
 void copyLeaf(Listek *a, Listek b) {
@@ -313,4 +305,11 @@ void drawNodeInfo(Listek l) {
 	cout << "\n|Solution: " << l.solution << " |" << endl;
 	draw(&l);
 	cout << "\n===========";
+}
+
+void clearMe(std::queue <Listek> *q) {
+	while (!q->empty()) {
+		delete[] q->front().tab;
+		q->pop();
+	}
 }
