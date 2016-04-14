@@ -215,23 +215,22 @@ void writeLetter(string *s, dir d) {
 }
 
 bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
-	std::queue <Listek> *bingo = new queue <Listek>();
-	bingo->push(*begin);
+	std::queue <Listek> bingo;
+	bingo.push(*begin);
 	bool finished = false;
 	bool solvable = false;
 
-	while (!bingo->empty() && finished == false) {
-		if (checkIfFinished(bingo->front().tab)) {
+	while (!bingo.empty() && finished == false) {
+		if (checkIfFinished(bingo.front().tab)) {
 			finished = true;
 			solvable = true;
-			copyLeaf(winner, bingo->front());
-			delete bingo;
-		}	else if (bingo->front().depth + 1 > depth) {
+			copyLeaf(winner, bingo.front());
+		}	else if (bingo.front().depth + 1 > depth) {
 			finished = true;
 		}	else {
 			// time to add sum leaves
-			generateMoves(bingo);
-			bingo->pop();
+			generateMoves(&bingo);
+			bingo.pop();
 			totalMoves++;
 		}
 	}
@@ -266,21 +265,25 @@ void generateMoves(std::queue <Listek> *q) {
 		Listek *pushMe;
 		pushMe = makeANode(last, UP);
 		q->push(*pushMe);
+		delete pushMe;
 	}
 	if (check(last.zeroPos, DOWN) && lastdir != DOWN) {
 		Listek *pushMe;
 		pushMe = makeANode(last, DOWN);
 		q->push(*pushMe);
+		delete pushMe;
 	}
 	if (check(last.zeroPos, LEFT) && lastdir != LEFT) {
 		Listek *pushMe;
 		pushMe = makeANode(last, LEFT);
 		q->push(*pushMe);
+		delete pushMe;
 	}
 	if (check(last.zeroPos, RIGHT) && lastdir != RIGHT){
 		Listek *pushMe;
 		pushMe = makeANode(last, RIGHT);
 		q->push(*pushMe);
+		delete pushMe;
 	}
 }
 
