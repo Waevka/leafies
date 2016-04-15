@@ -24,6 +24,7 @@ dir reverseDir(dir d);
 dir returnLastDir(string s);
 void writeLetter(string *s, dir d);
 bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
+bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);
 void makeANode(Listek last, dir d, std::queue <Listek> *q);
@@ -237,6 +238,17 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 			totalMoves++;
 		}
 	}
+	return solvable;
+}
+
+bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
+	bool finished = false;
+	bool solvable = false;
+
+	while (finished == false) {
+
+	}
+
 	return solvable;
 }
 
