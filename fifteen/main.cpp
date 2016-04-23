@@ -42,6 +42,7 @@ dir returnLastDir(string s);
 void writeLetter(string *s, dir d);
 bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
+bool DFSHelper(Listek oldL, int depth, Listek *winner);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);
 Listek* makeANode(const Listek *last, dir d);
@@ -67,8 +68,8 @@ int main()
 	randomujTo(randomSteps, first);
 	draw(first);
 	cout << "\n#### Rozpoczynam rozwiazywanie planszy (Maksymalny poziom listka: " << maxDepth << ") ####";
-	melon = dawajBFS(first, maxDepth, winner, totalMoves);
-	//melon = dawajDFS(first, maxDepth, winner, totalMoves); // Let's try some DFS instead!
+	//melon = dawajBFS(first, maxDepth, winner, totalMoves);
+	melon = dawajDFS(first, maxDepth, winner, totalMoves); // Let's try some DFS instead!
 	cout << "\n\nCzy zagadka jest rozwiazywalna? : " << (melon? "tak!" : "nie :(" );
 	if (melon) {
 		cout << "\n\n Zwycieski listek: \n";
@@ -261,29 +262,43 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 }
 
 bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
-	bool finished = false;
 	bool solvable = false;
-
-	while (finished == false) {
-		/*if (checkIfFinished) {
-			finished = true;
-			solvable = true;
-			copyLeafff
-		}*/
-	}
-
+	solvable = DFSHelper(*begin, depth, winner);
 	return solvable;
 }
 
 bool DFSHelper(Listek oldL, int depth, Listek *winner) {
 	if (checkIfFinished(oldL.tab)) {
 		copyLeaf(winner, &oldL);
-		//delete[] oldL.tab;
 		return true;			// finished with success
 	} else if ( depth == 0 ){	// finished with failure
 		return false;
 	} else {					// else keep diggin'
-		
+		dir lastdir = returnLastDir(oldL.solution);
+		lastdir = reverseDir(lastdir);
+		Listek *newL;
+		bool solvable = false;
+		if (check(oldL.zeroPos, UP) && lastdir != UP && solvable == false) {
+			newL = makeANode(&oldL, UP);
+			solvable = DFSHelper(*newL, depth - 1, winner);
+			delete newL;
+		}
+		if (check(oldL.zeroPos, DOWN) && lastdir != DOWN && solvable == false) {
+			newL = makeANode(&oldL, DOWN);
+			solvable = DFSHelper(*newL, depth - 1, winner);
+			delete newL;
+		}
+		if (check(oldL.zeroPos, LEFT) && lastdir != LEFT && solvable == false) {
+			newL = makeANode(&oldL, LEFT);
+			solvable = DFSHelper(*newL, depth - 1, winner);
+			delete newL;
+		}
+		if (check(oldL.zeroPos, RIGHT) && lastdir != RIGHT && solvable == false) {
+			newL = makeANode(&oldL, RIGHT);
+			solvable = DFSHelper(*newL, depth - 1, winner);
+			delete newL;
+		}
+		return solvable;
 	}
 }
 
