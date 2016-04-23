@@ -8,11 +8,15 @@
 using namespace std;
 /////////////////////////////////////
 enum dir { LEFT = -1, NONE = 0, RIGHT = 1, UP = -N, DOWN = N };
-struct Listek {
+class Listek {
+public:
 	int* tab = new int[N*N];
 	int zeroPos;
 	int depth;
 	string solution;
+	~Listek() {
+		//delete[] this->tab;
+	}
 };
 void initialize(Listek *l);
 void tabCopy(int a[], int b[]);
@@ -27,7 +31,7 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);
-void makeANode(Listek last, dir d, std::queue <Listek> *q);
+Listek makeANode(Listek last, dir d);
 void copyLeaf(Listek *a, Listek b);
 void drawNodeInfo(Listek l);
 void clearMe(std::queue <Listek> *q);
@@ -50,6 +54,7 @@ int main()
 	draw(first);
 	cout << "\n#### Rozpoczynam rozwiazywanie planszy (Maksymalny poziom listka: " << maxDepth << ") ####";
 	melon = dawajBFS(first, maxDepth, winner, totalMoves);
+	//melon = dawajDFS(first, maxDepth, winner, totalMoves); // Let's try some DFS instead!
 	cout << "\n\nCzy zagadka jest rozwiazywalna? : " << (melon? "tak!" : "nie :(" );
 	if (melon) {
 		cout << "\n\n Zwycieski listek: \n";
@@ -246,10 +251,26 @@ bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 	bool solvable = false;
 
 	while (finished == false) {
-
+		/*if (checkIfFinished) {
+			finished = true;
+			solvable = true;
+			copyLeafff
+		}*/
 	}
 
 	return solvable;
+}
+
+bool DFSHelper(Listek oldL, int depth, Listek *winner) {
+	if (checkIfFinished(oldL.tab)) {
+		copyLeaf(winner, oldL);
+		//delete[] oldL.tab;
+		return true;			// finished with success
+	} else if ( depth == 0 ){	// finished with failure
+		return false;
+	} else {					// else keep diggin'
+		
+	}
 }
 
 bool checkIfFinished(int tab[]) {
@@ -275,22 +296,27 @@ void generateMoves(std::queue <Listek> *q) {
 	Listek last = q->front();
 	dir lastdir = returnLastDir(last.solution);
 	lastdir = reverseDir(lastdir);
+	Listek newL;
 
 	if (check(last.zeroPos, UP) && lastdir != UP) {
-		makeANode(last, UP, q);
+		newL = makeANode(last, UP);
+		q->push(newL);
 	}
 	if (check(last.zeroPos, DOWN) && lastdir != DOWN) {
-		makeANode(last, DOWN, q);
+		newL = makeANode(last, DOWN);
+		q->push(newL);
 	}
 	if (check(last.zeroPos, LEFT) && lastdir != LEFT) {
-		makeANode(last, LEFT, q);
+		newL = makeANode(last, LEFT);
+		q->push(newL);
 	}
 	if (check(last.zeroPos, RIGHT) && lastdir != RIGHT){
-		makeANode(last, RIGHT, q);
+		newL = makeANode(last, RIGHT);
+		q->push(newL);
 	}
 }
 
-void makeANode(Listek last, dir d, std::queue <Listek> *q) {
+Listek makeANode(Listek last, dir d) {
 	Listek l;
 	initialize(&l);
 	tabCopy(l.tab, last.tab);
@@ -300,7 +326,7 @@ void makeANode(Listek last, dir d, std::queue <Listek> *q) {
 	writeLetter(&(l.solution), d);
 	swapKappa(l.tab, l.zeroPos, d);
 	l.zeroPos += d;
-	q->push(l);
+	return l;
 }
 
 void copyLeaf(Listek *a, Listek b) {
