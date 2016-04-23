@@ -42,7 +42,7 @@ dir returnLastDir(string s);
 void writeLetter(string *s, dir d);
 bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
-bool DFSHelper(Listek oldL, int depth, Listek *winner);
+bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);
 Listek* makeANode(const Listek *last, dir d);
@@ -59,8 +59,8 @@ int main()
 	initialize(first);
 	draw(first);
 	initialize(winner);
-	int randomSteps = 17;
-	int maxDepth = 20;
+	int randomSteps = 7;
+	int maxDepth = 10;
 	bool melon = false;
 	int totalMoves = 0;
 
@@ -263,11 +263,11 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 
 bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 	bool solvable = false;
-	solvable = DFSHelper(*begin, depth, winner);
+	solvable = DFSHelper(*begin, depth, winner, totalMoves);
 	return solvable;
 }
 
-bool DFSHelper(Listek oldL, int depth, Listek *winner) {
+bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves) {
 	if (checkIfFinished(oldL.tab)) {
 		copyLeaf(winner, &oldL);
 		return true;			// finished with success
@@ -278,24 +278,25 @@ bool DFSHelper(Listek oldL, int depth, Listek *winner) {
 		lastdir = reverseDir(lastdir);
 		Listek *newL;
 		bool solvable = false;
+		totalMoves++;
 		if (check(oldL.zeroPos, UP) && lastdir != UP && solvable == false) {
 			newL = makeANode(&oldL, UP);
-			solvable = DFSHelper(*newL, depth - 1, winner);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
 			delete newL;
 		}
 		if (check(oldL.zeroPos, DOWN) && lastdir != DOWN && solvable == false) {
 			newL = makeANode(&oldL, DOWN);
-			solvable = DFSHelper(*newL, depth - 1, winner);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
 			delete newL;
 		}
 		if (check(oldL.zeroPos, LEFT) && lastdir != LEFT && solvable == false) {
 			newL = makeANode(&oldL, LEFT);
-			solvable = DFSHelper(*newL, depth - 1, winner);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
 			delete newL;
 		}
 		if (check(oldL.zeroPos, RIGHT) && lastdir != RIGHT && solvable == false) {
 			newL = makeANode(&oldL, RIGHT);
-			solvable = DFSHelper(*newL, depth - 1, winner);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
 			delete newL;
 		}
 		return solvable;
