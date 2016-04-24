@@ -1,12 +1,14 @@
 #pragma once
 #include <iostream>
 #include <string>
-#define N 4
+#define N 5
 
 /////////////////////////////////////////////////////////////////
 enum dir { LEFT = -1, NONE = 0, RIGHT = 1, UP = -N, DOWN = N, RANDOM };
 enum solver { BFS, DFS, DFS_ITERATIVE, HEURISTIC };
 class Listek;
+extern int boardHeight;
+extern int boardWidth;
 /////////////////////////////////////////////////////////////////
 solver setStrategy(char arg[]);
 void setOrder(char arg[], dir dirlist[]);
@@ -31,3 +33,5 @@ void drawNodeInfo(Listek l);
 void createRandomMoveset(dir dirs[]);
 dir getRandomDirection();
 void clearMe(std::queue <Listek> *q);
+int dirVal(dir d);
+Listek *loadBoard();

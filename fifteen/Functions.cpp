@@ -36,30 +36,30 @@ void initialize(Listek *l) {
 	l->solution = "";
 
 	int count = 1;
-	for (int i = 0; i < N*N; i++) {
-		if (count != N*N) {
+	for (int i = 0; i < boardHeight*boardWidth; i++) {
+		if (count != boardHeight*boardWidth) {
 			l->tab[i] = count;
 			count++;
 		}
 		else {
 			l->tab[i] = 0;
-			l->zeroPos = N*N - 1;
+			l->zeroPos = boardHeight*boardWidth - 1;
 		}
 	}
 }
 
 void tabCopy(int a[], int b[]) {
 	//copies from b to a
-	for (int i = 0; i < N*N; i++) {
+	for (int i = 0; i < boardHeight*boardWidth; i++) {
 		a[i] = b[i];
 	}
 }
 
 //Draws the table
 void draw(Listek *l) {
-	for (int i = 0; i < N*N; i++) {
+	for (int i = 0; i < boardHeight*boardWidth; i++) {
 		cout << setw(5) << l->tab[i] << " ";
-		if (i%N == N - 1) { cout << endl; }
+		if (i%boardHeight == boardWidth - 1) { cout << endl; }
 	}
 }
 
@@ -75,7 +75,7 @@ void randomujTo(int ile, Listek *l) {
 		if (check(l->zeroPos, d) && d != lastd) {
 			swapKappa(l->tab, l->zeroPos, d);
 			lastd = reverseDir(d);
-			l->zeroPos += d;
+			l->zeroPos += dirVal(d);
 			count++;
 		}
 	}
@@ -87,22 +87,22 @@ bool check(int pos, dir d) {
 	bool youSmart = true;
 	switch (d) {
 	case UP:
-		if ((pos - N) < 0) {
+		if ((pos - boardWidth) < 0) {
 			youSmart = false;
 		}
 		break;
 	case DOWN:
-		if ((pos + N) > (N*N - 1)) {
+		if ((pos + boardWidth) > (boardHeight*boardWidth - 1)) {
 			youSmart = false;
 		}
 		break;
 	case LEFT:
-		if ((pos%N - 1) <= 0) {
+		if ((pos%boardWidth - 1) <= 0) {
 			youSmart = false;
 		}
 		break;
 	case RIGHT:
-		if ((pos%N + 1 >= N)) {
+		if ((pos%boardHeight + 1 >= boardHeight)) {
 			youSmart = false;
 		}
 		break;
@@ -112,8 +112,9 @@ bool check(int pos, dir d) {
 
 //Swaps two tiles
 void swapKappa(int tab[], int pos, dir d) {
-	int a = tab[pos + d];
-	tab[pos + d] = tab[pos];
+	int dv = dirVal(d);
+	int a = tab[pos + dv];
+	tab[pos + dv] = tab[pos];
 	tab[pos] = a;
 }
 
@@ -270,8 +271,8 @@ bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool ran
 bool checkIfFinished(int tab[]) {
 	int count = 1;
 	bool valid = true;
-	for (int i = 0; i < N*N; i++) {
-		if (count != N*N) {
+	for (int i = 0; i < boardHeight*boardWidth; i++) {
+		if (count != boardHeight*boardWidth) {
 			if (tab[i] != count) {
 				valid = false;
 			}
@@ -310,7 +311,7 @@ Listek* makeANode(const Listek *last, dir d) {
 	l->zeroPos = last->zeroPos;
 	writeLetter(&(l->solution), d);
 	swapKappa(l->tab, l->zeroPos, d);
-	l->zeroPos += d;
+	l->zeroPos += dirVal(d);
 	return l;
 }
 
@@ -361,4 +362,34 @@ void clearMe(std::queue <Listek> *q) {
 	while (!q->empty()) {
 		q->pop();
 	}
+}
+
+int dirVal(dir d) {
+	int h = boardWidth;
+	int val;
+	switch (d)
+	{
+	case UP:
+		val = -boardWidth;
+		break;
+	case DOWN:
+		val = boardWidth;
+		break;
+	case LEFT:
+		val = -1;
+		break;
+	case RIGHT:
+		val = 1;
+		break;
+	default:
+		break;
+	}
+	return val;
+}
+
+Listek *loadBoard() {
+	boardHeight = 5;
+	boardWidth = 5;
+	Listek *l = new Listek (boardHeight, boardWidth);
+	return l;
 }

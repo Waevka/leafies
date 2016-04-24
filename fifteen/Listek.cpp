@@ -8,12 +8,18 @@
 
 Listek::Listek()
 {
-	tab = new int[N*N];
+	tab = new int[boardHeight*boardWidth];
+	initialize(this);
+}
+
+Listek::Listek(int x, int y)
+{
+	tab = new int[x*y];
 	initialize(this);
 }
 
 Listek::Listek(const Listek &toCopy) {
-	tab = new int[N*N];
+	tab = new int[boardHeight*boardWidth];
 	tabCopy(tab, toCopy.tab);
 	depth = toCopy.depth;
 	solution = toCopy.solution;

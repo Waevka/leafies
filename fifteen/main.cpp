@@ -9,6 +9,8 @@
 using namespace std;
 /////////////////////////////////////
 class Listek;
+int boardHeight = N;
+int boardWidth = N;
 /////////////////////////////////////
 int main(int argc, char *argv[])
 {	
@@ -16,9 +18,7 @@ int main(int argc, char *argv[])
 	Listek *first = new Listek();
 	Listek *winner = new Listek();
 	initialize(first);
-	draw(first);
-	initialize(winner);
-	int randomSteps = 15;
+	int randomSteps = 13;
 	int maxDepth = 30;
 	bool melon = false;
 	bool randomizeMoves = false;
@@ -35,10 +35,31 @@ int main(int argc, char *argv[])
 			randomizeMoves = true;
 		}
 	}
+
+	int solution;
+	cout << "#### Wybierz opcje:";
+	cout << "\n 1. Losowa generacja";
+	cout << "\n 2. Wczytywanie z pliku input.txt";
+	cout << "\n Wybor:  ";
+	cin >> solution;
+
+	switch (solution)
+	{ 
+	case 1:
+		cout << "\n#### Losowo wygenerowana plansza (Liczba krokow: " << randomSteps << "): ####\n";
+		randomujTo(randomSteps, first);
+		draw(first);
+		break;
+	case 2:
+		cout << "\n#### Wczytuje z pliku:";
+		first = loadBoard();
+		initialize(winner);
+		break;
+	default:
+		break;
+	}
 	
-	cout << "#### Losowo wygenerowana plansza (Liczba krokow: " << randomSteps << "): ####\n";
-	randomujTo(randomSteps, first);
-	draw(first);
+	
 	cout << "\n#### Rozpoczynam rozwiazywanie planszy (Maksymalny poziom listka: " << maxDepth << ") ####";
 	cout << "\n#### Porzadek przeszukiwania: " << (randomizeMoves ? "losowy" : argv[2]);
 	cout << "\n#### Wybrana strategia: ";
@@ -71,6 +92,7 @@ int main(int argc, char *argv[])
 		drawNodeInfo(*winner);
 	}
 	cout << "\n\nOdwiedzone listki: " << totalMoves;
+	cin.ignore();
 	cin.get();
 	return 0;
 }
