@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	Listek *winner = new Listek();
 	initialize(first);
 	int randomSteps = 13;
-	int maxDepth = 30;
+	int maxDepth = 20;
 	bool melon = false;
 	bool randomizeMoves = false;
 	int totalMoves = 0;

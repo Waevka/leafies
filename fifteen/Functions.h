@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
-#define N 5
+#define N 4
 
 /////////////////////////////////////////////////////////////////
 enum dir { LEFT = -1, NONE = 0, RIGHT = 1, UP = -N, DOWN = N, RANDOM };

@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string>
 #include <queue>
+#include <fstream>
 #include "Functions.h"
 #include "Listek.h"
 
@@ -388,8 +389,26 @@ int dirVal(dir d) {
 }
 
 Listek *loadBoard() {
-	boardHeight = 5;
-	boardWidth = 5;
-	Listek *l = new Listek (boardHeight, boardWidth);
+	ifstream s;
+	Listek *l;
+	s.open("input.txt");
+	if (s.is_open()) {
+		s >> boardHeight;
+		s >> boardWidth;
+		l = new Listek();
+		l->tab = new int[boardHeight*boardWidth];
+		int counter = 0;
+		while (!s.eof()) {
+			s >> l->tab[counter];
+			if (l->tab[counter] == 0) {
+				l->zeroPos = counter;
+			}
+			counter++;
+		}
+	}
+	else {
+		l = new Listek(N, N);
+	}
+	
 	return l;
 }
