@@ -19,6 +19,7 @@ dir returnLastDir(std::string s);
 void writeLetter(std::string *s, dir d);
 bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
+bool dawajIteracyjnyBFS(Listek *begin, int depth, Listek *winner, int &totalMoves);
 bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves);
 bool checkIfFinished(int tab[]);
 void generateMoves(std::queue <Listek> *q);

@@ -196,6 +196,18 @@ bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 	return solvable;
 }
 
+bool dawajIteracyjnyBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
+	int iteracja = 1;
+	bool solvable = false;
+	while (iteracja < depth && !solvable) {
+		cout << "\nIteracja nr " << iteracja << ", znaleziono rozwiazanie?... ";
+		solvable = DFSHelper(*begin, iteracja, winner, totalMoves);
+		cout << (solvable ? "Tak!" : "Nie, wykonuje kolejna iteracje");
+		iteracja++;
+	}
+	return solvable;
+}
+
 bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves) {
 	if (checkIfFinished(oldL.tab)) {
 		copyLeaf(winner, &oldL);
