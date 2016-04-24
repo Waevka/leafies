@@ -92,6 +92,9 @@ int main(int argc, char *argv[])
 		drawNodeInfo(*winner);
 	}
 	cout << "\n\nOdwiedzone listki: " << totalMoves;
+	cout << "\n\nRozwiazanie zostaje zapisane do pliku output.txt!";
+	writeInfoToFile(winner->solution);
+
 	cin.ignore();
 	cin.get();
 	return 0;

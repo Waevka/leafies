@@ -409,6 +409,26 @@ Listek *loadBoard() {
 	else {
 		l = new Listek(N, N);
 	}
+	s.close();
 	
 	return l;
+}
+
+void writeInfoToFile(string s) {
+	int count = s.length();
+	ofstream o;
+	o.open("output.txt");
+	if (o.is_open()) {
+		if (count == 0) {
+			o << -1;
+		}
+		else {
+			o << count << endl;
+			o << s;
+		}
+	}
+	else {
+		cout << "/n  Error writing to file, omitting...";
+	}
+	o.close();
 }

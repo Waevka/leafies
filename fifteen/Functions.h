@@ -35,3 +35,4 @@ dir getRandomDirection();
 void clearMe(std::queue <Listek> *q);
 int dirVal(dir d);
 Listek *loadBoard();
+void writeInfoToFile(std::string s);
