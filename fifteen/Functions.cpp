@@ -196,7 +196,7 @@ bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 	return solvable;
 }
 
-bool dawajIteracyjnyBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
+bool dawajIteracyjnyDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 	int iteracja = 1;
 	bool solvable = false;
 	while (iteracja < depth && !solvable) {
@@ -326,5 +326,4 @@ void clearMe(std::queue <Listek> *q) {
 	while (!q->empty()) {
 		q->pop();
 	}
-	cout << "Finished clearing";
 }
