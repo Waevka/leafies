@@ -8,6 +8,11 @@ using namespace std;
 int* readInput(int &height, int &width, bool &read, int &zeropos);
 bool readOutput(string &str, int &count);
 void drawBoard(int height, int width, int tab[]);
+void drawBoard(int height, int width, int tab[], int value, int zeropos);
+int returnLastDir(string s, int height, int width, int i);
+void simulate(int height, int width, int tab[], string solution, int zeropos, int solutionCount);
+void swapKappa(int tab[], int &pos, int val);
+
 
 int main()
 {	
@@ -30,7 +35,8 @@ int main()
 	}
 	else {
 		drawBoard(height, width, tab);
-		cout << "\Wczytana plansza";
+		cout << "\nWczytana plansza";
+		simulate(height, width, tab, solution, zeropos, solutionCount);
 	}
 
 
@@ -85,4 +91,56 @@ void drawBoard(int height, int width, int tab[]) {
 		cout << setw(5) << tab[i] << " ";
 		if (i%height == width - 1) { cout << endl; }
 	}
+}
+
+void drawBoard(int height, int width, int tab[], int value, int zeropos) {
+	bool mark = false;
+	int w = 5;
+	for (int i = 0; i < height*width; i++) {
+		mark = false;
+		w = 5;
+		if (i == (zeropos - value) || i == zeropos) {
+			mark = true;
+			w = 5;
+		}
+		cout << setw(w) << (mark? "[":"") << tab[i] << (mark ? "]" : "") << " ";
+		if (i%height == width - 1) { cout << endl; }
+	}
+}
+
+int returnLastDir(string s, int height, int width, int i) {
+	string c = s.substr(i, 1);
+	int ret;
+	if (c.compare("G") == 0) {
+		ret = -width;
+	}
+	if (c.compare("D") == 0) {
+		ret = width;
+	}
+	if (c.compare("L") == 0) {
+		ret = -1;
+	}
+	if (c.compare("P") == 0) {
+		ret = 1;
+	}
+	return ret;
+}
+void simulate(int height, int width, int tab[], string solution, int zeropos, int solutionCount) {
+	int currMove;
+	for (int i = 0; i < solutionCount; i++) {
+		cout << "\n\n\n\n\n\n";
+		cout << endl;
+		currMove = returnLastDir(solution, height, width, i);
+		swapKappa(tab, zeropos, currMove);
+		drawBoard(height, width, tab, currMove, zeropos);
+		cout << "\n#### " << i << " Wykonany ruch: " << solution.substr(i, 1);
+	}
+	cin.get();
+}
+
+void swapKappa(int tab[], int &pos, int val) {
+	int a = tab[pos + val];
+	tab[pos + val] = tab[pos];
+	tab[pos] = a;
+	pos = pos + val;
 }
