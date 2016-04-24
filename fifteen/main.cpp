@@ -30,9 +30,8 @@ int main(int argc, char *argv[])
 		s = setStrategy(argv[1]);
 	}
 	if (argc > 2) {
-		//setOrder(argv[2], order);
-		createRandomMoveset(order);
-		if (order[1] == RANDOM) {
+		setOrder(argv[2], order);
+		if (order[0] == RANDOM) {
 			randomizeMoves = true;
 		}
 	}
@@ -41,6 +40,7 @@ int main(int argc, char *argv[])
 	randomujTo(randomSteps, first);
 	draw(first);
 	cout << "\n#### Rozpoczynam rozwiazywanie planszy (Maksymalny poziom listka: " << maxDepth << ") ####";
+	cout << "\n#### Porzadek przeszukiwania: " << (randomizeMoves ? "losowy" : argv[2]);
 	cout << "\n#### Wybrana strategia: ";
 
 	switch (s) {

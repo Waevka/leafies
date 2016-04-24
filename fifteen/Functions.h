@@ -24,7 +24,7 @@ bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool ra
 bool dawajIteracyjnyDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]);
 bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]);
 bool checkIfFinished(int tab[]);
-void generateMoves(std::queue <Listek> *q);
+void generateMoves(std::queue <Listek> *q, dir movelist[]);
 Listek* makeANode(const Listek *last, dir d);
 void copyLeaf(Listek *a, const Listek *b);
 void drawNodeInfo(Listek l);

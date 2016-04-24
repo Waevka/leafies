@@ -20,7 +20,7 @@ solver setStrategy(char arg[]) {
 	return s;
 }
 void setOrder(char arg[], dir dirlist[]) {
-	if (arg[1] == 'R') {
+	if (arg[0] == 'R') {
 		dirlist[0] = RANDOM;
 	}
 	else {
@@ -197,9 +197,10 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool ra
 			finished = true;
 		}
 		else {
-			// time to add sum leaves
-			generateMoves(&bingo);
-			//delete[] bingo.front().tab;
+			if (randomize) {
+				createRandomMoveset(movelist);
+			}
+			generateMoves(&bingo, movelist);
 			bingo.pop();
 			totalMoves++;
 		}
@@ -282,31 +283,18 @@ bool checkIfFinished(int tab[]) {
 	return valid;
 }
 
-void generateMoves(std::queue <Listek> *q) {
+void generateMoves(std::queue <Listek> *q, dir movelist[]) {
 	Listek *last = &(q->front());
 	dir lastdir = returnLastDir(last->solution);
 	lastdir = reverseDir(lastdir);
 	Listek *newL;
 
-	if (check(last->zeroPos, UP) && lastdir != UP) {
-		newL = makeANode(last, UP);
-		q->push(*newL);
-		delete newL;
-	}
-	if (check(last->zeroPos, DOWN) && lastdir != DOWN) {
-		newL = makeANode(last, DOWN);
-		q->push(*newL);
-		delete newL;
-	}
-	if (check(last->zeroPos, LEFT) && lastdir != LEFT) {
-		newL = makeANode(last, LEFT);
-		q->push(*newL);
-		delete newL;
-	}
-	if (check(last->zeroPos, RIGHT) && lastdir != RIGHT) {
-		newL = makeANode(last, RIGHT);
-		q->push(*newL);
-		delete newL;
+	for (int i = 0; i < 4; i++) {
+		if (check(last->zeroPos, movelist[i]) && lastdir != movelist[i]) {
+			newL = makeANode(last, movelist[i]);
+			q->push(*newL);
+			delete newL;
+		}
 	}
 }
 
