@@ -4,10 +4,12 @@
 #define N 4
 
 /////////////////////////////////////////////////////////////////
-enum dir { LEFT = -1, NONE = 0, RIGHT = 1, UP = -N, DOWN = N };
+enum dir { LEFT = -1, NONE = 0, RIGHT = 1, UP = -N, DOWN = N, RANDOM };
+enum solver { BFS, DFS, DFS_ITERATIVE, HEURISTIC };
 class Listek;
 /////////////////////////////////////////////////////////////////
-
+solver setStrategy(char arg[]);
+void setOrder(char arg[], dir dirlist[]);
 void initialize(Listek *l);
 void tabCopy(int a[], int b[]);
 void draw(Listek *l);

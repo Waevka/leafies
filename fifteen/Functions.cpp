@@ -7,6 +7,29 @@
 #include "Listek.h"
 
 using namespace std;
+solver setStrategy(char arg[]) {
+	string argument = arg;
+	solver s;
+	if (argument == "b" || argument == "bfs")
+		s = BFS;
+	if (argument == "d" || argument == "dfs")
+		s = DFS;
+	if (argument == "i" || argument == "idfs")
+		s = DFS_ITERATIVE;
+	//if(argv[1] == "a")
+	return s;
+}
+void setOrder(char arg[], dir dirlist[]) {
+	if (arg[1] == 'R') {
+		dirlist[0] = RANDOM;
+	}
+	else {
+		string letters = arg;
+		for (int i = 0; i < 4; i++) {
+			dirlist[i] = returnLastDir(letters.substr(i,1));
+		}
+	}
+}
 //Fills the table with numbahs
 void initialize(Listek *l) {
 	l->depth = 0;
@@ -129,7 +152,7 @@ dir returnLastDir(string s) {
 		return NONE;
 	}
 	string c = s.substr(s.length() - 1);
-	if (c.compare("U") == 0) {
+	if (c.compare("G") == 0) {
 		returnik = UP;
 	}
 	if (c.compare("D") == 0) {
@@ -138,7 +161,7 @@ dir returnLastDir(string s) {
 	if (c.compare("L") == 0) {
 		returnik = LEFT;
 	}
-	if (c.compare("R") == 0) {
+	if (c.compare("P") == 0) {
 		returnik = RIGHT;
 	}
 	return returnik;
@@ -147,7 +170,7 @@ dir returnLastDir(string s) {
 void writeLetter(string *s, dir d) {
 	switch (d) {
 	case UP:
-		*s += "U";
+		*s += "G";
 		break;
 	case DOWN:
 		*s += "D";
@@ -156,7 +179,7 @@ void writeLetter(string *s, dir d) {
 		*s += "L";
 		break;
 	case RIGHT:
-		*s += "R";
+		*s += "P";
 		break;
 	default:
 		break;

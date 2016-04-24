@@ -12,7 +12,6 @@ class Listek;
 /////////////////////////////////////
 int main(int argc, char *argv[])
 {	
-	enum solver { BFS, DFS, DFS_ITERATIVE, HEURISTIC };
 	srand((unsigned int)time(NULL));
 	Listek *first = new Listek();
 	Listek *winner = new Listek();
@@ -24,17 +23,15 @@ int main(int argc, char *argv[])
 	bool melon = false;
 	int totalMoves = 0;
 	solver s;
+	dir order[4];
 	
 	if (argc > 1) {
-		string argument = argv[1];
-		if (argument == "b" || argument == "bfs")
-			s = BFS;
-		if (argument == "d" || argument == "dfs")
-			s = DFS;
-		if (argument == "i" || argument == "idfs")
-			s = DFS_ITERATIVE;
-		//if(argv[1] == "a")
+		s = setStrategy(argv[1]);
 	}
+	if (argc > 2) {
+		setOrder(argv[2], order);
+	}
+	
 
 	cout << "#### Losowo wygenerowana plansza (Liczba krokow: " << randomSteps << "): ####\n";
 	randomujTo(randomSteps, first);
