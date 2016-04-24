@@ -238,27 +238,30 @@ bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool ran
 		dir lastdir = returnLastDir(oldL.solution);
 		lastdir = reverseDir(lastdir);
 		Listek *newL;
+		dir *thisNodeMovelist;
 		bool solvable = false;
 		totalMoves++;
-		if (check(oldL.zeroPos, UP) && lastdir != UP && solvable == false) {
-			newL = makeANode(&oldL, UP);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
-			delete newL;
+
+		// For randomized movelists - create one for each node
+		if (randomize) {
+			thisNodeMovelist = new dir[4];
+			createRandomMoveset(thisNodeMovelist);
 		}
-		if (check(oldL.zeroPos, DOWN) && lastdir != DOWN && solvable == false) {
-			newL = makeANode(&oldL, DOWN);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
-			delete newL;
+		else {
+			thisNodeMovelist = movelist;
 		}
-		if (check(oldL.zeroPos, LEFT) && lastdir != LEFT && solvable == false) {
-			newL = makeANode(&oldL, LEFT);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
-			delete newL;
+
+		for (int i = 0; i < 4; i++) {
+			dir d = thisNodeMovelist[i];
+			if (check(oldL.zeroPos, d) && lastdir != d && solvable == false) {
+				newL = makeANode(&oldL, d);
+				solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
+				delete newL;
+			}
 		}
-		if (check(oldL.zeroPos, RIGHT) && lastdir != RIGHT && solvable == false) {
-			newL = makeANode(&oldL, RIGHT);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
-			delete newL;
+
+		if (randomize) {
+			delete[] thisNodeMovelist;
 		}
 		return solvable;
 	}
