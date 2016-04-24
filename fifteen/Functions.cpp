@@ -66,18 +66,12 @@ void draw(Listek *l) {
 //Randomly swaps tiles. Remembers last move to check and not repeat it in reverse.
 void randomujTo(int ile, Listek *l) {
 	int count = 0;
-	int randomek;
 	dir d = DOWN;
 	dir lastd = RIGHT;
 
 	while (count != ile) {
-		randomek = rand() % 4;
-
-		if (randomek == 0) { d = RIGHT; }
-		else if (randomek == 1) { d = LEFT; }
-		else if (randomek == 2) { d = DOWN; }
-		else { d = UP; }
-
+		d = getRandomDirection();
+		
 		if (check(l->zeroPos, d) && d != lastd) {
 			swapKappa(l->tab, l->zeroPos, d);
 			lastd = reverseDir(d);
@@ -186,7 +180,7 @@ void writeLetter(string *s, dir d) {
 	}
 }
 
-bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
+bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
 	std::queue <Listek> bingo;
 	bingo.push(*begin);
 	bool finished = false;
@@ -213,25 +207,25 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
 	return solvable;
 }
 
-bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
+bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
 	bool solvable = false;
-	solvable = DFSHelper(*begin, depth, winner, totalMoves);
+	solvable = DFSHelper(*begin, depth, winner, totalMoves, randomize, movelist);
 	return solvable;
 }
 
-bool dawajIteracyjnyDFS(Listek *begin, int depth, Listek *winner, int &totalMoves) {
+bool dawajIteracyjnyDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
 	int iteracja = 1;
 	bool solvable = false;
 	while (iteracja < depth && !solvable) {
 		cout << "\nIteracja nr " << iteracja << ", znaleziono rozwiazanie?... ";
-		solvable = DFSHelper(*begin, iteracja, winner, totalMoves);
+		solvable = DFSHelper(*begin, iteracja, winner, totalMoves, randomize, movelist);
 		cout << (solvable ? "Tak!" : "Nie, wykonuje kolejna iteracje");
 		iteracja++;
 	}
 	return solvable;
 }
 
-bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves) {
+bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
 	if (checkIfFinished(oldL.tab)) {
 		copyLeaf(winner, &oldL);
 		return true;			// finished with success
@@ -247,22 +241,22 @@ bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves) {
 		totalMoves++;
 		if (check(oldL.zeroPos, UP) && lastdir != UP && solvable == false) {
 			newL = makeANode(&oldL, UP);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
 			delete newL;
 		}
 		if (check(oldL.zeroPos, DOWN) && lastdir != DOWN && solvable == false) {
 			newL = makeANode(&oldL, DOWN);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
 			delete newL;
 		}
 		if (check(oldL.zeroPos, LEFT) && lastdir != LEFT && solvable == false) {
 			newL = makeANode(&oldL, LEFT);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
 			delete newL;
 		}
 		if (check(oldL.zeroPos, RIGHT) && lastdir != RIGHT && solvable == false) {
 			newL = makeANode(&oldL, RIGHT);
-			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves);
+			solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
 			delete newL;
 		}
 		return solvable;
@@ -343,6 +337,33 @@ void drawNodeInfo(Listek l) {
 	cout << "\n|Solution: " << l.solution << " |" << endl;
 	draw(&l);
 	cout << "\n===========";
+}
+
+void createRandomMoveset(dir dirs[]) {
+	dirs[0] = getRandomDirection();
+	for (int i = 1; i < 4; i++) {
+		bool unique;
+		dir d;
+		do {
+			unique = true;
+			d = getRandomDirection();
+			for (int j = 0; j < i; j++) {
+				if (dirs[j] == d) unique = false;
+			}
+		} while (!unique);
+		dirs[i] = d;
+	}
+}
+
+dir getRandomDirection() {
+	int randomek;
+	dir d;
+	randomek = rand() % 4;
+	if (randomek == 0) { d = RIGHT; }
+	else if (randomek == 1) { d = LEFT; }
+	else if (randomek == 2) { d = DOWN; }
+	else { d = UP; }
+	return d;
 }
 
 void clearMe(std::queue <Listek> *q) {
