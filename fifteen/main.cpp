@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
 	cin.ignore();
 	cout << "\n Podaj maksymalna glebokosc poszukiwan (maxDepth):  ";
 	cin >> maxDepth;
+	maxDepth;
 
 	switch (solution)
 	{ 

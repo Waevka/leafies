@@ -223,7 +223,7 @@ bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool ra
 bool dawajIteracyjnyDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[], bool heur) {
 	int iteracja = 1;
 	bool solvable = false;
-	while (iteracja < depth && !solvable) {
+	while (iteracja <= depth && !solvable) {
 		cout << "\nIteracja nr " << iteracja << ", znaleziono rozwiazanie?... ";
 		solvable = DFSHelper(*begin, iteracja, winner, totalMoves, randomize, movelist, heur);
 		cout << (solvable ? "Tak!" : "Nie, wykonuje kolejna iteracje");
@@ -257,12 +257,31 @@ bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool ran
 			thisNodeMovelist = movelist;
 		}
 
-		for (int i = 0; i < 4; i++) {
-			dir d = thisNodeMovelist[i];
-			if (check(oldL.zeroPos, d) && lastdir != d && solvable == false) {
-				newL = makeANode(&oldL, d);
-				solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist, heur);
-				delete newL;
+		if (!heur) {
+			for (int i = 0; i < 4; i++) {
+				dir d = thisNodeMovelist[i];
+				if (check(oldL.zeroPos, d) && lastdir != d && solvable == false) {
+					newL = makeANode(&oldL, d);
+					solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist, heur);
+					delete newL;
+				}
+			}
+		}
+		else {
+			Listek *ptr[4];
+			int proper = 0;
+			for (int i = 0; i < 4; i++) {
+				dir d = thisNodeMovelist[i];
+				if (check(oldL.zeroPos, d) && lastdir != d && solvable == false) {
+					ptr[proper] = makeANode(&oldL, movelist[i]);
+					proper++;
+				}
+			}
+			sortHeuristicMoves(proper, ptr);
+			for (int i = 0; i < proper; i++) {
+				if (!solvable) {
+					solvable = DFSHelper(*ptr[i], depth - 1, winner, totalMoves, randomize, movelist, heur);
+				}
 			}
 		}
 
