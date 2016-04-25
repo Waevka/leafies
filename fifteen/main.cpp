@@ -18,14 +18,21 @@ int main(int argc, char *argv[])
 	Listek *first = new Listek();
 	Listek *winner = new Listek();
 	initialize(first);
-	int randomSteps = 13;
-	int maxDepth = 20;
+	int randomSteps = 17;
+	int maxDepth = 25;
 	bool melon = false;
 	bool randomizeMoves = false;
 	int totalMoves = 0;
 	solver s;
 	dir order[4];
 	
+	if (argc >= 0) {
+		s = setStrategy("bfs");
+		order[0] = LEFT; // default move strategy
+		order[1] = DOWN;
+		order[2] = RIGHT;
+		order[3] = UP;
+	}
 	if (argc > 1) {
 		s = setStrategy(argv[1]);
 	}
@@ -61,7 +68,7 @@ int main(int argc, char *argv[])
 	
 	
 	cout << "\n#### Rozpoczynam rozwiazywanie planszy (Maksymalny poziom listka: " << maxDepth << ") ####";
-	cout << "\n#### Porzadek przeszukiwania: " << (randomizeMoves ? "losowy" : argv[2]);
+	cout << "\n#### Porzadek przeszukiwania: " << (randomizeMoves ? "losowy" : "wczytany");
 	cout << "\n#### Wybrana strategia: ";
 
 	switch (s) {
