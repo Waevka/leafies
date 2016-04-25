@@ -60,10 +60,16 @@ int main(int argc, char *argv[])
 	cout << "\n 2. Wczytywanie z pliku input.txt";
 	cout << "\n Wybor:  ";
 	cin >> solution;
+	cin.ignore();
+	cout << "\n Podaj maksymalna glebokosc poszukiwan (maxDepth):  ";
+	cin >> maxDepth;
 
 	switch (solution)
 	{ 
 	case 1:
+		cout << "\n Podaj ile losowych ruchow wykonac (randomSteps):  ";
+		cin.ignore();
+		cin >> randomSteps;
 		cout << "\n#### Losowo wygenerowana plansza (Liczba krokow: " << randomSteps << "): ####\n";
 		randomujTo(randomSteps, first);
 		draw(first);
