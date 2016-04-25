@@ -309,27 +309,14 @@ void generateMoves(std::queue <Listek> *q, dir movelist[], bool heur) {
 	} // Use heuristics
 	else {
 		Listek *ptr[4];
-		int values[4];
 		int proper = 0;
 		for (int i = 0; i < 4; i++) {
 			if (check(last->zeroPos, movelist[i]) && lastdir != movelist[i]) {
 				ptr[proper] = makeANode(last, movelist[i]);
-				values[proper] = calculateNodeValue(*ptr[proper]);
 				proper++;
 			}
-		} // sort them
-		for (int i = 0; i < proper; i++) {
-			for (int j = 0; j < proper - (i+1); j++) {
-				if (values[j] > values[j + 1]) {
-					int temp = values[j];
-					Listek *tempL = new Listek(*ptr[j]);
-					values[j] = values[j + 1];
-					values[j + 1] = temp;
-					ptr[j] = ptr[j + 1];
-					ptr[j + 1] = tempL;
-				}
-			}
 		}
+		sortHeuristicMoves(proper, ptr);
 		for (int i = 0; i < proper; i++) {
 			q->push(*ptr[i]);
 		}
@@ -337,7 +324,27 @@ void generateMoves(std::queue <Listek> *q, dir movelist[], bool heur) {
 	
 }
 
-int calculateNodeValue(Listek node) {
+void sortHeuristicMoves(int count, Listek* ptr[]) {
+	int values[4];
+	for (int i = 0; i < count; i++) {
+		values[count] = calculateNodeValue(*ptr[i]);
+	}
+	 // sort them
+	for (int i = 0; i < count; i++) {
+		for (int j = 0; j < count - (i + 1); j++) {
+			if (values[j] > values[j + 1]) {
+				int temp = values[j];
+				Listek *tempL = new Listek(*ptr[j]);
+				values[j] = values[j + 1];
+				values[j + 1] = temp;
+				ptr[j] = ptr[j + 1];
+				ptr[j + 1] = tempL;
+			}
+		}
+	}
+}
+
+int calculateNodeValue(Listek &node) {
 	int score = 0;
 	for (int i = 0; i < boardHeight*boardWidth; i++) {
 		if (node.tab[i] == i+1) {
