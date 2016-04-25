@@ -338,7 +338,14 @@ void generateMoves(std::queue <Listek> *q, dir movelist[], bool heur) {
 }
 
 int calculateNodeValue(Listek node) {
-	return 1;
+	int score = 0;
+	for (int i = 0; i < boardHeight*boardWidth; i++) {
+		if (node.tab[i] == i+1) {
+			score++;
+		}
+	}
+	if (node.tab[boardHeight*boardWidth] == 0) score++;
+	return score;
 }
 
 Listek* makeANode(const Listek *last, dir d) {
