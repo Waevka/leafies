@@ -18,14 +18,17 @@ int main(int argc, char *argv[])
 	Listek *first = new Listek();
 	Listek *winner = new Listek();
 	initialize(first);
-	int randomSteps = 17;
-	int maxDepth = 25;
+	int randomSteps = 12;
+	int maxDepth = 20;
 	bool melon = false;
 	bool randomizeMoves = false;
+	bool useHeuristics = false;
 	int totalMoves = 0;
 	solver s;
 	dir order[4];
 	
+	// Setting search parameters:
+	// If there are no arguments, use bfs and a default movelist.
 	if (argc >= 0) {
 		s = setStrategy("bfs");
 		order[0] = LEFT; // default move strategy
@@ -33,13 +36,21 @@ int main(int argc, char *argv[])
 		order[2] = RIGHT;
 		order[3] = UP;
 	}
+	// If only the method is passed, set it and use a default movelist (set above)
 	if (argc > 1) {
 		s = setStrategy(argv[1]);
 	}
+	// Finally, if both arguments are passed, set them.
 	if (argc > 2) {
-		setOrder(argv[2], order);
-		if (order[0] == RANDOM) {
-			randomizeMoves = true;
+		if (s == HEURISTIC) {
+			useHeuristics = true;
+			s = setStrategy(argv[2]);
+		}
+		else {
+			setOrder(argv[2], order);
+			if (order[0] == RANDOM) {
+				randomizeMoves = true;
+			}
 		}
 	}
 
@@ -69,27 +80,25 @@ int main(int argc, char *argv[])
 	
 	cout << "\n#### Rozpoczynam rozwiazywanie planszy (Maksymalny poziom listka: " << maxDepth << ") ####";
 	cout << "\n#### Porzadek przeszukiwania: " << (randomizeMoves ? "losowy" : "wczytany");
+	cout << (useHeuristics? "\n#### Wybrano opcje heurystyki" : "");
 	cout << "\n#### Wybrana strategia: ";
 
 	switch (s) {
 	case(BFS):
 		cout << "BFS";
-		melon = dawajBFS(first, maxDepth, winner, totalMoves, randomizeMoves, order);
+		melon = dawajBFS(first, maxDepth, winner, totalMoves, randomizeMoves, order, useHeuristics);
 		break;
 	case(DFS):
 		cout << "DFS";
-		melon = dawajDFS(first, maxDepth, winner, totalMoves, randomizeMoves, order);
+		melon = dawajDFS(first, maxDepth, winner, totalMoves, randomizeMoves, order, useHeuristics);
 		break;
 	case(DFS_ITERATIVE):
 		cout << "DFS iteracyjny";
-		melon = dawajIteracyjnyDFS(first, maxDepth, winner, totalMoves, randomizeMoves, order);		
-		break;
-	case(HEURISTIC):
-		cout << "Heurystyka";
+		melon = dawajIteracyjnyDFS(first, maxDepth, winner, totalMoves, randomizeMoves, order, useHeuristics);		
 		break;
 	default:
 		cout << "\n!! Brak wybranej strategii! U¿ywam domyœlnie BFS";
-		melon = dawajBFS(first, maxDepth, winner, totalMoves, randomizeMoves, order);
+		melon = dawajBFS(first, maxDepth, winner, totalMoves, randomizeMoves, order, useHeuristics);
 		break;
 	}
 

@@ -17,11 +17,15 @@ solver setStrategy(char arg[]) {
 		s = DFS;
 	if (argument == "i" || argument == "idfs")
 		s = DFS_ITERATIVE;
-	//if(argv[1] == "a")
+	if (argument == "a")
+		s = HEURISTIC;
 	return s;
 }
 void setOrder(char arg[], dir dirlist[]) {
 	if (arg[0] == 'R') {
+		dirlist[0] = RANDOM;
+	}
+	else if (arg[0] != 'L' || arg[0] != 'P' || arg[0] != 'G' || arg[0] != 'D') {
 		dirlist[0] = RANDOM;
 	}
 	else {
@@ -182,7 +186,7 @@ void writeLetter(string *s, dir d) {
 	}
 }
 
-bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
+bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[], bool heur) {
 	std::queue <Listek> bingo;
 	bingo.push(*begin);
 	bool finished = false;
@@ -202,7 +206,7 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool ra
 			if (randomize) {
 				createRandomMoveset(movelist);
 			}
-			generateMoves(&bingo, movelist);
+			generateMoves(&bingo, movelist, heur);
 			bingo.pop();
 			totalMoves++;
 		}
@@ -210,25 +214,25 @@ bool dawajBFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool ra
 	return solvable;
 }
 
-bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
+bool dawajDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[], bool heur) {
 	bool solvable = false;
-	solvable = DFSHelper(*begin, depth, winner, totalMoves, randomize, movelist);
+	solvable = DFSHelper(*begin, depth, winner, totalMoves, randomize, movelist, heur);
 	return solvable;
 }
 
-bool dawajIteracyjnyDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
+bool dawajIteracyjnyDFS(Listek *begin, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[], bool heur) {
 	int iteracja = 1;
 	bool solvable = false;
 	while (iteracja < depth && !solvable) {
 		cout << "\nIteracja nr " << iteracja << ", znaleziono rozwiazanie?... ";
-		solvable = DFSHelper(*begin, iteracja, winner, totalMoves, randomize, movelist);
+		solvable = DFSHelper(*begin, iteracja, winner, totalMoves, randomize, movelist, heur);
 		cout << (solvable ? "Tak!" : "Nie, wykonuje kolejna iteracje");
 		iteracja++;
 	}
 	return solvable;
 }
 
-bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[]) {
+bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool randomize, dir movelist[], bool heur) {
 	if (checkIfFinished(oldL.tab)) {
 		copyLeaf(winner, &oldL);
 		return true;			// finished with success
@@ -257,7 +261,7 @@ bool DFSHelper(Listek oldL, int depth, Listek *winner, int &totalMoves, bool ran
 			dir d = thisNodeMovelist[i];
 			if (check(oldL.zeroPos, d) && lastdir != d && solvable == false) {
 				newL = makeANode(&oldL, d);
-				solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist);
+				solvable = DFSHelper(*newL, depth - 1, winner, totalMoves, randomize, movelist, heur);
 				delete newL;
 			}
 		}
@@ -288,19 +292,53 @@ bool checkIfFinished(int tab[]) {
 	return valid;
 }
 
-void generateMoves(std::queue <Listek> *q, dir movelist[]) {
+void generateMoves(std::queue <Listek> *q, dir movelist[], bool heur) {
 	Listek *last = &(q->front());
 	dir lastdir = returnLastDir(last->solution);
 	lastdir = reverseDir(lastdir);
 	Listek *newL;
 
-	for (int i = 0; i < 4; i++) {
-		if (check(last->zeroPos, movelist[i]) && lastdir != movelist[i]) {
-			newL = makeANode(last, movelist[i]);
-			q->push(*newL);
-			delete newL;
+	if (!heur) {
+		for (int i = 0; i < 4; i++) {
+			if (check(last->zeroPos, movelist[i]) && lastdir != movelist[i]) {
+				newL = makeANode(last, movelist[i]);
+				q->push(*newL);
+				delete newL;
+			}
+		}
+	} // Use heuristics
+	else {
+		Listek *ptr[4];
+		int values[4];
+		int proper = 0;
+		for (int i = 0; i < 4; i++) {
+			if (check(last->zeroPos, movelist[i]) && lastdir != movelist[i]) {
+				ptr[proper] = makeANode(last, movelist[i]);
+				values[proper] = calculateNodeValue(*ptr[proper]);
+				proper++;
+			}
+		} // sort them
+		for (int i = 0; i < proper; i++) {
+			for (int j = 0; j < proper - (i+1); j++) {
+				if (values[j] > values[j + 1]) {
+					int temp = values[j];
+					Listek *tempL = new Listek(*ptr[j]);
+					values[j] = values[j + 1];
+					values[j + 1] = temp;
+					ptr[j] = ptr[j + 1];
+					ptr[j + 1] = tempL;
+				}
+			}
+		}
+		for (int i = 0; i < proper; i++) {
+			q->push(*ptr[i]);
 		}
 	}
+	
+}
+
+int calculateNodeValue(Listek node) {
+	return 1;
 }
 
 Listek* makeANode(const Listek *last, dir d) {
