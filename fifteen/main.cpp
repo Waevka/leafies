@@ -3,10 +3,12 @@
 #include <time.h>
 #include <string>
 #include <queue>
+#include <chrono>
 #include "Listek.h"
 #include "Functions.h"
 
 using namespace std;
+using namespace std::chrono;
 /////////////////////////////////////
 class Listek;
 int boardHeight = N;
@@ -89,6 +91,7 @@ int main(int argc, char *argv[])
 	cout << "\n#### Porzadek przeszukiwania: " << (randomizeMoves ? "losowy" : "wczytany");
 	cout << (useHeuristics? "\n#### Wybrano opcje heurystyki" : "");
 	cout << "\n#### Wybrana strategia: ";
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
 	switch (s) {
 	case(BFS):
@@ -108,6 +111,10 @@ int main(int argc, char *argv[])
 		melon = dawajBFS(first, maxDepth, winner, totalMoves, randomizeMoves, order, useHeuristics);
 		break;
 	}
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	auto durationSec = duration_cast<seconds>(t2 - t1).count();
+	auto durationMs = duration_cast<milliseconds>(t2 - t1).count();
+
 
 	cout << "\n\nCzy zagadka jest rozwiazywalna? : " << (melon? "tak!" : "nie :(" );
 	if (melon) {
@@ -115,6 +122,7 @@ int main(int argc, char *argv[])
 		drawNodeInfo(*winner);
 	}
 	cout << "\n\nOdwiedzone listki: " << totalMoves;
+	cout << "\nCzas wykonania funkcji: " << durationSec << " sekund (" << durationMs << " milisekund)";
 	cout << "\n\nRozwiazanie zostaje zapisane do pliku output.txt!";
 	writeInfoToFile(winner->solution);
 

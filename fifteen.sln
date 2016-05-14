@@ -11,6 +11,8 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release + link libraries|x64 = Release + link libraries|x64
+		Release + link libraries|x86 = Release + link libraries|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -18,11 +20,18 @@ Global
 		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Debug|x64.ActiveCfg = Debug|Win32
 		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Debug|x86.ActiveCfg = Debug|Win32
 		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Debug|x86.Build.0 = Debug|Win32
+		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Release + link libraries|x64.ActiveCfg = Release + link libraries|Win32
+		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Release + link libraries|x86.ActiveCfg = Release + link libraries|Win32
+		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Release + link libraries|x86.Build.0 = Release + link libraries|Win32
 		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Release|x64.ActiveCfg = Release|Win32
 		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Release|x86.ActiveCfg = Release|Win32
 		{7F2DBB06-73F7-4632-BEF2-B6BF47384F02}.Release|x86.Build.0 = Release|Win32
 		{95C61D26-EBA9-456E-9308-01703C6C6787}.Debug|x64.ActiveCfg = Debug|Win32
 		{95C61D26-EBA9-456E-9308-01703C6C6787}.Debug|x86.ActiveCfg = Debug|Win32
+		{95C61D26-EBA9-456E-9308-01703C6C6787}.Debug|x86.Build.0 = Debug|Win32
+		{95C61D26-EBA9-456E-9308-01703C6C6787}.Release + link libraries|x64.ActiveCfg = Release + link libraries|Win32
+		{95C61D26-EBA9-456E-9308-01703C6C6787}.Release + link libraries|x86.ActiveCfg = Release + link libraries|Win32
+		{95C61D26-EBA9-456E-9308-01703C6C6787}.Release + link libraries|x86.Build.0 = Release + link libraries|Win32
 		{95C61D26-EBA9-456E-9308-01703C6C6787}.Release|x64.ActiveCfg = Release|Win32
 		{95C61D26-EBA9-456E-9308-01703C6C6787}.Release|x86.ActiveCfg = Release|Win32
 		{95C61D26-EBA9-456E-9308-01703C6C6787}.Release|x86.Build.0 = Release|Win32
