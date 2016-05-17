@@ -5,33 +5,45 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JTable;
 
 public class Visual extends JFrame implements ActionListener {
-  public int[] board;
-  public String moves;
+  public static int[] board;
+  public static String moves;
+  
+  public static ArrayList<Step> steps;
   
   // GUI
   private Label currentMove;
+  private String[] columnNames;
   
   //Board properties
-  private int bHeight;
-  private int bWidth;
-  private int totalMoves;
+  private static int bHeight;
+  private static int bWidth;
+  private static int totalMoves;
+  private JTable table;
   
   public Visual(){
+    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     
-    setLayout(new FlowLayout());
-    
-    currentMove = new Label("Moves");
-    add(currentMove);
+    currentMove = new Label("LOADING");
+    currentMove.setAlignment(Label.CENTER);
+    getContentPane().add(currentMove);
     
     setTitle("Fifteen");
     setSize(200,200);
+
+    table = new JTable();
+    getContentPane().add(table);
     
     setVisible(true);
     this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -45,10 +57,10 @@ public class Visual extends JFrame implements ActionListener {
       URL url = getClass().getResource("input.txt");
       File in = new File(url.getPath());
       scanner = new Scanner(in);
-      this.bHeight = scanner.nextInt( );
-      this.bWidth = scanner.nextInt( );
+      Visual.bHeight = scanner.nextInt( );
+      Visual.bWidth = scanner.nextInt( );
       
-      this.board = new int[this.bHeight * this.bWidth];
+      Visual.board = new int[Visual.bHeight * Visual.bWidth];
       
       while(scanner.hasNextInt( )){
         board[i] = scanner.nextInt( );
@@ -72,7 +84,7 @@ public class Visual extends JFrame implements ActionListener {
       File in = new File(url.getPath());
       scanner = new Scanner(in);
       this.totalMoves = scanner.nextInt( );
-      this.moves = scanner.next( );
+      Visual.moves = scanner.next( );
       
     } catch ( FileNotFoundException e ) {
       System.out.println( "output.txt - not found!" );
@@ -82,13 +94,29 @@ public class Visual extends JFrame implements ActionListener {
     }
   }
   
+  public void fillColumnNames(){
+    this.columnNames = new String[bWidth];
+    for(int i = 0; i<bWidth; i++){
+      this.columnNames[i] = Integer.toString( i );
+    }
+  }
+  
+  public void fillTable(Step s){
+    DefaultTableModel model = new DefaultTableModel(s.getTable( ), columnNames);
+    table.setModel( model );
+  }
+  
   public static void main( String [ ] args ) {
     
     Visual v = new Visual();
     v.loadInput();
     v.loadOutput();
-    System.out.println( Arrays.toString( v.board ) );
-    System.out.println( v.moves );
+    System.out.println( Arrays.toString( Visual.board ) );
+    //System.out.println( Visual.moves );
+    v.fillColumnNames();
+    StepCreator s = new StepCreator();
+    steps = s.createSteps( moves, board, bHeight, bWidth, totalMoves );
+    v.fillTable(steps.get( 0 ));
   }
 
   @Override
