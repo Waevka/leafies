@@ -19,7 +19,7 @@ import javax.swing.JTable;
 public class Visual extends JFrame implements ActionListener {
   public static int[] board;
   public static String moves;
-  
+  public static int zeroPos;
   public static ArrayList<Step> steps;
   
   // GUI
@@ -64,6 +64,9 @@ public class Visual extends JFrame implements ActionListener {
       
       while(scanner.hasNextInt( )){
         board[i] = scanner.nextInt( );
+        if(board[i] == 0){
+          Visual.zeroPos = i;
+        }
         i++;
       }
       
@@ -83,7 +86,7 @@ public class Visual extends JFrame implements ActionListener {
       URL url = getClass().getResource("output.txt");
       File in = new File(url.getPath());
       scanner = new Scanner(in);
-      this.totalMoves = scanner.nextInt( );
+      Visual.totalMoves = scanner.nextInt( );
       Visual.moves = scanner.next( );
       
     } catch ( FileNotFoundException e ) {
@@ -115,7 +118,7 @@ public class Visual extends JFrame implements ActionListener {
     //System.out.println( Visual.moves );
     v.fillColumnNames();
     StepCreator s = new StepCreator();
-    steps = s.createSteps( moves, board, bHeight, bWidth, totalMoves );
+    steps = s.createSteps( moves, board, bHeight, bWidth, totalMoves, zeroPos );
     v.fillTable(steps.get( 0 ));
   }
 
